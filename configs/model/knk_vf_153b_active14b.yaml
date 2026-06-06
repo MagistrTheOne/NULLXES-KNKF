@@ -1,0 +1,66 @@
+name: knk_vf_153b_active14b
+display_name: "KNK-VF 153B Active-14B"
+owner: "NULLXES"
+contact: "ceo@nullxes.com"
+model:
+  vocab_size: 128000
+  max_position_embeddings: 262144
+  num_layers: 50
+  hidden_size: 4096
+  num_attention_heads: 32
+  num_key_value_heads: 8
+  head_dim: 128
+  rope_theta: 1000000.0
+  rope_scaling: yarn
+  attention_pattern:
+    type: hybrid
+    local_window: 4096
+    global_every: 4
+  dense_prefix_layers: 4
+  ffn_hidden_size: 11008
+  expert_ffn_hidden_size: 2048
+  num_routed_experts: 128
+  num_shared_experts: 1
+  routed_top_k: 8
+  router:
+    type: normalized_sigmoid
+    gate_dtype: fp32
+    load_balance: smebu
+  norm: rmsnorm
+  norm_eps: 1.0e-6
+  use_bias: false
+  tie_embeddings: false
+  z_loss_coefficient: 1.0e-5
+parameter_targets:
+  active_params_min: 13000000000
+  active_params_max: 16000000000
+  total_params_min: 150000000000
+  total_params_max: 160000000000
+estimated_parameters:
+  attention_params: 2097152000
+  dense_ffn_params: 541458432
+  moe_total_params: 149326413824
+  moe_active_params: 10418061312
+  embedding_params: 1048576000
+  router_params: 24117248
+  total_params: 153037717504
+  active_params: 14129465344
+init:
+  method: llama_neox_residual
+  base_std: 0.02
+  router_std: 0.001
+  dtype: bf16
+  global_seed: 42
+  sharding:
+    max_shard_size_gb: 8
+  output_dir: /workspace/checkpoints/knk_vf_153b_active14b
+  hf_repo: MagistrTheOne/KNK-VF-153B
+  cluster_only: true
+training:
+  precision: bf16
+  target_precision_after_proxy: fp8
+  hardware: h200_or_b300_only
+notes:
+  - "Reduced frontier artifact for H200 init-only budget: above 150B total params."
+  - "Initialization-only checkpoint; not pretrained."
+  - "Use sharded CPU or H200 init; do not materialize the full model in RAM/VRAM."
