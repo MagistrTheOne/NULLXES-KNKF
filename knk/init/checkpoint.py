@@ -57,7 +57,11 @@ def build_hf_config(model: dict, report_total: int, report_active: int) -> dict:
 
 
 def write_model_card(output_dir: Path, model_name: str, report_total: int, report_active: int) -> None:
-    card = f"""---
+    card_path = Path(__file__).resolve().parents[2] / "configs/hub/knk_vf_153b_model_card.md"
+    if card_path.exists():
+        card = card_path.read_text(encoding="utf-8")
+    else:
+        card = f"""---
 library_name: transformers
 tags:
 - nullxes

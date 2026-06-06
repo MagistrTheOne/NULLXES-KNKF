@@ -1,0 +1,63 @@
+# NULLXES KNKF — Hugging Face hub manifest for KNK-VF-153B init checkpoint.
+# Publish: scripts/hub/publish_model_card.sh
+
+owner: NULLXES
+contact: ceo@nullxes.com
+
+hub:
+  repo_id: MagistrTheOne/KNK-VF-153B
+  repo_type: model
+  commit_message: "Update NULLXES KNK-VF-153B model card"
+
+model:
+  codename: knk_vf_153b_active14b
+  display_name: "KNK-VF-153B Active-14B"
+  family: "KNK-VF VOID FORGED"
+  program: "NULLXES KNKF"
+  status: initialization-only
+  pretrained: false
+  total_params: 153044910080
+  active_params: 14129561600
+  dtype: bfloat16
+  shard_count: 36
+  max_shard_size_gb: 8
+  init:
+    method: llama_neox_residual
+    global_seed: 42
+    base_std: 0.02
+    router_std: 0.001
+  config_path: configs/model/knk_vf_153b_active14b.yaml
+
+card:
+  source: configs/hub/knk_vf_153b_model_card.md
+  destination: README.md
+
+tags:
+  - nullxes
+  - knkf
+  - knk-vf
+  - void-forged
+  - kurotama-no-kami
+  - moe
+  - sparse-moe
+  - mixture-of-experts
+  - initialization
+  - random-init
+  - bf16
+  - long-context
+  - multilingual
+  - code
+  - enterprise
+  - text-generation
+  - h200
+  - b300
+  - megatron
+
+languages:
+  - en
+  - ru
+
+hardware_policy:
+  accelerators: [h200, b300]
+  cluster_env: KNKF_CLUSTER_EXECUTION=1
+  local_materialization: forbidden
