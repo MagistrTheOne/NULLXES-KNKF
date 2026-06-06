@@ -4,7 +4,6 @@ language:
   - en
   - ru
 license: other
-license_name: "NULLXES Proprietary / Research Use"
 library_name: transformers
 pipeline_tag: text-generation
 tags:
@@ -28,7 +27,6 @@ tags:
   - b300
   - megatron
 model_creator: NULLXES
-extra_gated_prompt: "This is a NULLXES initialization-only checkpoint. Not pretrained. Not for production inference."
 model-index:
   - name: KNK-VF-153B-Init
     results: []
@@ -50,6 +48,7 @@ model-index:
 | **Codename** | KNK-VF-153B Active-14B |
 | **Phase** | Init-only — prepared for aggressive datacenter pretrain |
 | **Pretrained** | **No** |
+| **License** | NULLXES proprietary / research use (`license: other`) |
 
 ## Summary
 
