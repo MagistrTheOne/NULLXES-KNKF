@@ -55,4 +55,5 @@ training:
   requires_memory_profile: true
 notes:
   - "Aggressive 2026+ frontier MoE target above the previous 1T-class KNK-VF config."
+  - "Kagutsuchi is the Japanese fire deity reference behind the Cinder Tracks codename."
   - "Use only on H200/B300 cluster infrastructure; do not launch local runs."
