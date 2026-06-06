@@ -33,7 +33,18 @@ parameter_targets:
   active_params_max: 70000000000
   total_params_min: 900000000000
   total_params_max: 1100000000000
+init:
+  method: llama_neox_residual
+  base_std: 0.02
+  router_std: 0.001
+  dtype: bf16
+  global_seed: 42
+  sharding:
+    max_shard_size_gb: 4
+  output_dir: /checkpoints/knk_vf_target_70b_active
+  hf_repo: MagistrTheOne/KNK-VF-1T
+  cluster_only: true
 training:
   precision: bf16
   target_precision_after_proxy: fp8
-  hardware: h200
+  hardware: h200_or_b300_only
