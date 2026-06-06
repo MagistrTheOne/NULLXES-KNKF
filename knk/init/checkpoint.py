@@ -152,7 +152,7 @@ def initialize_checkpoint(
         save_file(cpu_tensors, output_dir / shard_name)
         del tensors, cpu_tensors
         gc.collect()
-        if torch.cuda.is_available():
+        if torch_device.type == "cuda":
             torch.cuda.empty_cache()
         print(f"[knkf-init] wrote {shard_name} ({len(group)} tensors)")
 
