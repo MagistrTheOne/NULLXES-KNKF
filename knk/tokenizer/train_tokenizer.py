@@ -7,7 +7,19 @@ from pathlib import Path
 import unicodedata
 
 
-SPECIAL_TOKENS = ["<|bos|>", "<|eos|>", "<|pad|>"]
+DEFAULT_SPECIAL_TOKENS = [
+    "<|bos|>",
+    "<|eos|>",
+    "<|pad|>",
+    "<|system|>",
+    "<|user|>",
+    "<|assistant|>",
+    "<|tool|>",
+    "<|code|>",
+    "<|/code|>",
+    "<|think|>",
+    "<|/think|>",
+]
 
 
 def normalize_text(text: str) -> str:
@@ -28,13 +40,14 @@ def train_sentencepiece(
     model_prefix: Path,
     vocab_size: int = 128000,
     byte_fallback: bool = True,
+    special_tokens: list[str] | None = None,
 ) -> None:
     try:
         import sentencepiece as spm
     except ImportError as exc:
         raise RuntimeError("Install sentencepiece to train the tokenizer.") from exc
 
-    user_defined_symbols = ",".join(SPECIAL_TOKENS)
+    user_defined_symbols = ",".join(special_tokens or DEFAULT_SPECIAL_TOKENS)
     spm.SentencePieceTrainer.Train(
         input=str(input_path),
         model_prefix=str(model_prefix),

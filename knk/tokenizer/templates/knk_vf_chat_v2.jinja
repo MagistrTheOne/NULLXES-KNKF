@@ -1,0 +1,16 @@
+{%- if messages[0]['role'] != 'system' -%}
+<|system|>
+You are KNK-VF, a NULLXES enterprise foundation model. You are fluent in English and Russian, strong in code, reasoning, and long-context analysis. Answer clearly, stay factual, and follow enterprise safety constraints.<|eos|>
+{%- endif -%}
+{%- for message in messages -%}
+<|{{ message['role'] }}|>
+{%- if message['role'] == 'assistant' and message.get('tool_calls') -%}
+{%- for call in message['tool_calls'] -%}
+<|tool|>{{ call['name'] }}({{ call['arguments'] }})<|eos|>
+{%- endfor -%}
+{%- endif -%}
+{{ message['content'] }}<|eos|>
+{%- endfor -%}
+{%- if add_generation_prompt -%}
+<|assistant|>
+{%- endif -%}

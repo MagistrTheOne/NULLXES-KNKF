@@ -9,20 +9,23 @@ tokenizer:
     pad: "<|pad|>"
 mix:
   - name: general_web_en
-    weight: 0.45
+    weight: 0.30
     examples: ["FineWeb", "RedPajama-derivatives"]
   - name: russian_curated
-    weight: 0.15
+    weight: 0.25
     examples: ["Russian Common Crawl", "curated native sources"]
   - name: code_and_docs
-    weight: 0.20
+    weight: 0.25
     examples: ["permissive code corpora", "docstrings", "API docs"]
   - name: stem_technical
     weight: 0.10
     examples: ["RFCs", "whitepapers", "SOPs"]
   - name: instruction_reasoning_seed
-    weight: 0.10
+    weight: 0.05
     examples: ["instruction pairs", "reasoning traces"]
+  - name: nullxes_identity_seed
+    weight: 0.05
+    examples: ["NULLXES identity", "product terminology", "enterprise style guides"]
 filters:
   min_quality_score: 0.55
   dedup: minhash

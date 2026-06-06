@@ -1,0 +1,42 @@
+name: knk_vf_tokenizer_128k
+owner: NULLXES
+contact: ceo@nullxes.com
+vocab_size: 128000
+model_type: bpe
+normalization: nfkc
+byte_fallback: true
+character_coverage: 0.9995
+split_digits: true
+allow_whitespace_only_pieces: true
+user_defined_symbols:
+  - "<|bos|>"
+  - "<|eos|>"
+  - "<|pad|>"
+  - "<|system|>"
+  - "<|user|>"
+  - "<|assistant|>"
+  - "<|tool|>"
+  - "<|code|>"
+  - "<|/code|>"
+  - "<|think|>"
+  - "<|/think|>"
+corpus_mix:
+  - name: english_web
+    weight: 0.35
+  - name: russian_web
+    weight: 0.25
+  - name: code_multilang
+    weight: 0.25
+  - name: technical_docs
+    weight: 0.10
+  - name: nullxes_identity_seed
+    weight: 0.05
+validation_targets:
+  unk_rate_max: 0.001
+  ru_holdout_chars_per_token_min: 3.5
+  en_holdout_chars_per_token_min: 4.0
+  code_holdout_chars_per_token_min: 2.8
+hf_export:
+  tokenizer_class: LlamaTokenizer
+  chat_template: knk_vf_chat_v2
+  model_max_length: 262144

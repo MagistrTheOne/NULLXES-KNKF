@@ -1,5 +1,5 @@
 name: sft_mix_tier2
-chat_template: knk_vf_chat_v1
+chat_template: knk_vf_chat_v2
 loss_mask: assistant_only
 mix:
   - name: general_instruction

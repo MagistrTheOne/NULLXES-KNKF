@@ -1,0 +1,28 @@
+name: bootstrap_identity_tier0
+owner: NULLXES
+contact: ceo@nullxes.com
+purpose: identity_and_capability_bootstrap
+chat_template: knk_vf_chat_v2
+languages: [en, ru]
+domains: [general, code, enterprise, identity]
+mix:
+  - name: nullxes_identity_en
+    weight: 0.20
+    source: data/bootstrap/identity_en.jsonl
+  - name: nullxes_identity_ru
+    weight: 0.20
+    source: data/bootstrap/identity_ru.jsonl
+  - name: bilingual_capability
+    weight: 0.20
+    source: data/bootstrap/bilingual_capability.jsonl
+  - name: code_capability
+    weight: 0.25
+    source: data/bootstrap/code_capability.jsonl
+  - name: enterprise_safety
+    weight: 0.15
+    source: data/bootstrap/enterprise_safety.jsonl
+usage:
+  stage: bootstrap
+  train: false
+  sft_seed: true
+  eval_gate: true

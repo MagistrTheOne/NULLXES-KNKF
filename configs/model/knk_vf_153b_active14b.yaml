@@ -60,7 +60,12 @@ training:
   precision: bf16
   target_precision_after_proxy: fp8
   hardware: h200_or_b300_only
+tokenizer:
+  config: configs/tokenizer/knk_vf_tokenizer_128k.yaml
+  chat_template: knk_vf_chat_v2
+  bootstrap_data: configs/data/bootstrap_identity_tier0.yaml
 notes:
   - "Reduced frontier artifact for H200 init-only budget: above 150B total params."
   - "Initialization-only checkpoint; not pretrained."
   - "Use sharded CPU or H200 init; do not materialize the full model in RAM/VRAM."
+  - "Pair with 128K EN/RU/code tokenizer and bootstrap identity datasets before SFT."
