@@ -1,0 +1,39 @@
+name: knk_vf_target_70b_active
+model:
+  vocab_size: 128000
+  max_position_embeddings: 262144
+  num_layers: 96
+  hidden_size: 11264
+  num_attention_heads: 88
+  num_key_value_heads: 11
+  head_dim: 128
+  rope_theta: 1000000.0
+  rope_scaling: yarn
+  attention_pattern:
+    type: hybrid
+    local_window: 4096
+    global_every: 4
+  dense_prefix_layers: 6
+  ffn_hidden_size: 24576
+  expert_ffn_hidden_size: 1259
+  num_routed_experts: 256
+  num_shared_experts: 1
+  routed_top_k: 8
+  router:
+    type: normalized_sigmoid
+    gate_dtype: fp32
+    load_balance: smebu
+  norm: rmsnorm
+  norm_eps: 1.0e-6
+  use_bias: false
+  tie_embeddings: false
+  z_loss_coefficient: 1.0e-5
+parameter_targets:
+  active_params_min: 68000000000
+  active_params_max: 70000000000
+  total_params_min: 900000000000
+  total_params_max: 1100000000000
+training:
+  precision: bf16
+  target_precision_after_proxy: fp8
+  hardware: h200

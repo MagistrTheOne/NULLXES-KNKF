@@ -1,0 +1,16 @@
+name: domain_mix_tier3
+domains:
+  - name: banking
+    weight: 0.34
+    pii_required: false
+  - name: telecom
+    weight: 0.33
+    pii_required: false
+  - name: hr
+    weight: 0.33
+    pii_required: false
+alignment:
+  method: sft_then_dpo
+  adapters:
+    enabled: true
+    strategy: domain_gateway

@@ -1,0 +1,40 @@
+name: kagutsuchi_tracks_megatron_h200_b300
+model_config: configs/model/knkf_kagutsuchi_tracks_3_5t.yaml
+hardware:
+  allowed_gpus: [h200_sxm, b300_sxm]
+  local_execution: forbidden
+  preferred_gpu: b300_sxm
+parallelism:
+  tensor_parallel: 8
+  pipeline_parallel: 16
+  expert_parallel: 64
+  context_parallel: 4
+  data_parallel: auto
+precision:
+  matmul: bf16
+  router: fp32
+  loss: fp32
+  fp8_after_stable_steps: 2000
+checkpointing:
+  format: megatron_dist_checkpoint
+  async_save: true
+  rolling_to_keep: 3
+  milestone_to_keep: 1
+data:
+  mix_config: configs/data/pretrain_mix_tier1.yaml
+  sequence_length_curriculum: [32768, 131072, 262144, 524288, 1048576]
+monitoring:
+  log_every: 10
+  metrics:
+    - loss
+    - grad_norm
+    - mfu
+    - tokens_per_second
+    - expert_utilization
+    - router_entropy
+    - skipped_tokens
+gates:
+  requires_proxy_pass: true
+  requires_memory_profile: true
+  requires_cluster_scheduler: true
+  local_launch_allowed: false

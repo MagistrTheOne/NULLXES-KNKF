@@ -1,0 +1,20 @@
+name: vllm_serving
+model_config: configs/model/knk_vf_target_70b_active.yaml
+runtime:
+  engine: vllm
+  max_model_len: 262144
+  tensor_parallel_size: 4
+  enable_prefix_caching: true
+moe:
+  router: normalized_sigmoid
+  top_k: 8
+  shared_expert: true
+rag:
+  enabled: true
+  chunk_tokens: 4096
+  overlap_tokens: 256
+domain_gateway:
+  enabled: true
+  domains: [general, banking, telecom, hr, code]
+quantization:
+  supported: [int8, int4]

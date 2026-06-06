@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "knkf-nullxes-frontier"
+version = "0.1.0"
+description = "NULLXES KNKF frontier MoE foundation model configs and H200/B300-only training scaffold."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+  { name = "NULLXES", email = "ceo@nullxes.com" },
+]
+dependencies = [
+  "datasets>=2.20",
+  "numpy>=1.26",
+  "pyyaml>=6.0",
+  "sentencepiece>=0.2",
+  "torch>=2.4",
+  "transformers>=4.44",
+]
+
+[project.optional-dependencies]
+train = [
+  "flash-attn>=2.6",
+  "lm-eval>=0.4",
+  "megatron-core>=0.8",
+  "tensorboard>=2.17",
+  "wandb>=0.17",
+]
+dev = [
+  "pytest>=8.2",
+  "ruff>=0.5",
+]
+
+[tool.setuptools.packages.find]
+include = ["knk*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

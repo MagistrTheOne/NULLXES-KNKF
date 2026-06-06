@@ -1,0 +1,18 @@
+name: sft_mix_tier2
+chat_template: knk_vf_chat_v1
+loss_mask: assistant_only
+mix:
+  - name: general_instruction
+    weight: 0.40
+  - name: multilingual_en_ru
+    weight: 0.20
+  - name: code_fixit
+    weight: 0.20
+  - name: reasoning_qa
+    weight: 0.15
+  - name: safety_refusal
+    weight: 0.05
+training:
+  epochs: 2
+  learning_rate: 1.0e-5
+  pack_sequences: true

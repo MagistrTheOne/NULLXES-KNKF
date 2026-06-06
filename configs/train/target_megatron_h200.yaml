@@ -1,0 +1,37 @@
+name: target_megatron_h200
+model_config: configs/model/knk_vf_target_70b_active.yaml
+hardware:
+  gpu: h200_sxm
+  gpus_per_node: 4
+parallelism:
+  tensor_parallel: 4
+  pipeline_parallel: 12
+  expert_parallel: 32
+  context_parallel: 2
+  data_parallel: auto
+precision:
+  matmul: bf16
+  router: fp32
+  loss: fp32
+  fp8_after_stable_steps: 2000
+checkpointing:
+  format: megatron_dist_checkpoint
+  async_save: true
+  rolling_to_keep: 3
+  milestone_to_keep: 1
+data:
+  mix_config: configs/data/pretrain_mix_tier1.yaml
+  sequence_length_curriculum: [32768, 131072, 262144]
+monitoring:
+  log_every: 10
+  metrics:
+    - loss
+    - grad_norm
+    - mfu
+    - tokens_per_second
+    - expert_utilization
+    - router_entropy
+    - skipped_tokens
+gates:
+  requires_proxy_pass: true
+  requires_memory_profile: true

@@ -1,0 +1,25 @@
+name: kagutsuchi_tracks_serving
+model_config: configs/model/knkf_kagutsuchi_tracks_3_5t.yaml
+runtime:
+  engine: vllm_or_custom_sparse_router
+  max_model_len: 1048576
+  tensor_parallel_size: 8
+  enable_prefix_caching: true
+  local_execution: forbidden
+moe:
+  router: normalized_sigmoid
+  top_k: 8
+  shared_expert: true
+  routed_experts: 512
+rag:
+  enabled: true
+  chunk_tokens: 8192
+  overlap_tokens: 512
+domain_gateway:
+  enabled: true
+  domains: [general, banking, telecom, hr, code, agentic]
+quantization:
+  supported: [fp8, int8, int4]
+gates:
+  requires_h200_or_b300: true
+  local_launch_allowed: false
