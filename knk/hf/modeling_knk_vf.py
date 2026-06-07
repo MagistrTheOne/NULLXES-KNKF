@@ -15,6 +15,7 @@ from torch import nn
 import torch.nn.functional as F
 from transformers import GenerationConfig
 from transformers import PreTrainedModel
+from transformers.generation import GenerationMixin
 from transformers.modeling_outputs import CausalLMOutputWithPast
 
 try:
@@ -237,7 +238,7 @@ class KNKVFPreTrainedModel(PreTrainedModel):
             module.gradient_checkpointing = value
 
 
-class KNKVFForCausalLM(KNKVFPreTrainedModel):
+class KNKVFForCausalLM(KNKVFPreTrainedModel, GenerationMixin):
     def __init__(self, config: KNKVFConfig) -> None:
         super().__init__(config)
         self.model = KNKVFModel(config)
@@ -265,6 +266,14 @@ class KNKVFForCausalLM(KNKVFPreTrainedModel):
                 ignore_index=-100,
             )
         return CausalLMOutputWithPast(loss=loss, logits=logits)
+
+    def prepare_inputs_for_generation(
+        self,
+        input_ids: torch.Tensor,
+        attention_mask: torch.Tensor | None = None,
+        **kwargs: object,
+    ) -> dict[str, torch.Tensor | None]:
+        return {"input_ids": input_ids, "attention_mask": attention_mask}
 
     def get_input_embeddings(self) -> nn.Module:
         return self.model.embed_tokens
