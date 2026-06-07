@@ -1,0 +1,40 @@
+# Short KNK-only pretrain-like smoke run for current H200 sessions.
+
+model_name_or_path: /workspace/checkpoints/knk_vf_lab_38b
+trust_remote_code: true
+
+stage: pt
+do_train: true
+finetuning_type: lora
+lora_rank: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target: q_proj,k_proj,v_proj,o_proj
+
+dataset_dir: data/kurotama_pretrain
+dataset: kurotama_pretrain_text
+template: default
+cutoff_len: 1024
+max_samples: 1200
+overwrite_cache: true
+preprocessing_num_workers: 4
+
+output_dir: /workspace/outputs/kurotama-knk-vf-lab38b-pt-smoke-lora
+logging_steps: 1
+save_steps: 12
+plot_loss: true
+report_to: none
+
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 4
+learning_rate: 1.0e-4
+max_steps: 12
+lr_scheduler_type: cosine
+warmup_ratio: 0.08
+bf16: true
+gradient_checkpointing: true
+
+val_size: 0.05
+per_device_eval_batch_size: 1
+eval_strategy: steps
+eval_steps: 12

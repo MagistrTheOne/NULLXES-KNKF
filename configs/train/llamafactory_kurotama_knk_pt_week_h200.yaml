@@ -1,0 +1,41 @@
+# Longer KNK-only pretrain-like run template for a week-long H200 allocation.
+# Tune max_steps upward after the first stable 100-500 step pilot.
+
+model_name_or_path: /workspace/checkpoints/knk_vf_lab_38b
+trust_remote_code: true
+
+stage: pt
+do_train: true
+finetuning_type: lora
+lora_rank: 32
+lora_alpha: 64
+lora_dropout: 0.05
+lora_target: q_proj,k_proj,v_proj,o_proj
+
+dataset_dir: data/kurotama_pretrain
+dataset: kurotama_pretrain_text
+template: default
+cutoff_len: 2048
+max_samples: 20000
+overwrite_cache: true
+preprocessing_num_workers: 8
+
+output_dir: /workspace/outputs/kurotama-knk-vf-lab38b-pt-week-lora
+logging_steps: 10
+save_steps: 250
+plot_loss: true
+report_to: none
+
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 8
+learning_rate: 8.0e-5
+max_steps: 1000
+lr_scheduler_type: cosine
+warmup_ratio: 0.03
+bf16: true
+gradient_checkpointing: true
+
+val_size: 0.03
+per_device_eval_batch_size: 1
+eval_strategy: steps
+eval_steps: 250
