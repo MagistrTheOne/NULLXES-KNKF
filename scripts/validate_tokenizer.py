@@ -71,10 +71,11 @@ def main() -> None:
 
     special_failures = []
     for token in SPECIALS:
-        # Standalone encode adds dummy prefix ▁ by default; disable for atomic checks.
-        pieces = sp.encode_as_pieces(token, add_dummy_prefix=False)
-        if pieces != [token]:
-            special_failures.append({"token": token, "pieces": pieces})
+        piece_id = sp.piece_to_id(token)
+        if piece_id == sp.unk_id() or sp.id_to_piece(piece_id) != token:
+            special_failures.append(
+                {"token": token, "piece_id": piece_id, "piece": sp.id_to_piece(piece_id)}
+            )
 
     report = {
         "unk_rate": unk_rate,
