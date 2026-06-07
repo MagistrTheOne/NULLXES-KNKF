@@ -71,7 +71,8 @@ def main() -> None:
 
     special_failures = []
     for token in SPECIALS:
-        pieces = sp.encode(token, out_type=str)
+        # Standalone encode adds dummy prefix ▁ by default; disable for atomic checks.
+        pieces = sp.encode_as_pieces(token, add_dummy_prefix=False)
         if pieces != [token]:
             special_failures.append({"token": token, "pieces": pieces})
 
