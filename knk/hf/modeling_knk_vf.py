@@ -140,7 +140,7 @@ class KNKVFRouter(nn.Module):
         self.top_k = top_k
 
     def forward(self, x: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor, RouterMetrics]:
-        logits = self.gate(x.float())
+        logits = F.linear(x.float(), self.gate.weight.float(), None)
         scores = torch.sigmoid(logits)
         scores = scores / scores.sum(dim=-1, keepdim=True).clamp_min(1.0e-9)
         top_weights, top_indices = torch.topk(scores, self.top_k, dim=-1)
