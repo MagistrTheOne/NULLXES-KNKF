@@ -1,0 +1,42 @@
+# KUROTAMA KNK-only SFT lab on the initialized NULLXES KNK-VF Lab 38B checkpoint.
+# LLaMA Factory is only the training runner; model weights are local NULLXES init.
+
+model_name_or_path: /workspace/checkpoints/knk_vf_lab_38b
+trust_remote_code: true
+
+stage: sft
+do_train: true
+finetuning_type: lora
+lora_rank: 16
+lora_alpha: 32
+lora_dropout: 0.05
+lora_target: q_proj,k_proj,v_proj,o_proj
+
+dataset_dir: data/kurotama
+dataset: kurotama_sharegpt
+template: default
+cutoff_len: 1024
+max_samples: 500
+overwrite_cache: true
+preprocessing_num_workers: 4
+
+output_dir: /workspace/outputs/kurotama-knk-vf-lab38b-lora
+logging_steps: 10
+save_steps: 100
+plot_loss: true
+report_to: none
+
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 16
+learning_rate: 1.0e-4
+num_train_epochs: 1
+lr_scheduler_type: cosine
+warmup_ratio: 0.05
+bf16: true
+flash_attn: sdpa
+gradient_checkpointing: true
+
+val_size: 0.08
+per_device_eval_batch_size: 1
+eval_strategy: steps
+eval_steps: 100
