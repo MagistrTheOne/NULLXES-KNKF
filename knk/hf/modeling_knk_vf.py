@@ -55,6 +55,8 @@ def rotate_half(x: torch.Tensor) -> torch.Tensor:
 
 
 def apply_rope(x: torch.Tensor, cos: torch.Tensor, sin: torch.Tensor) -> torch.Tensor:
+    cos = cos.to(dtype=x.dtype)
+    sin = sin.to(dtype=x.dtype)
     return (x * cos[..., : x.shape[-2], :]) + (rotate_half(x) * sin[..., : x.shape[-2], :])
 
 
