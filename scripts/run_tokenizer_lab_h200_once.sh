@@ -29,18 +29,20 @@ PY
 
 python -m knk.tokenizer.train_tokenizer \
   --input data/synthetic/pretrain_corpus.txt \
-  --output-prefix /workspace/artifacts/knk_vf_tokenizer_128k/knk_vf \
-  --vocab-size 128000
+  --output-prefix /workspace/artifacts/knk_vf_tokenizer_lab/knk_vf \
+  --vocab-size 8192
 
 python scripts/validate_tokenizer.py \
-  --model /workspace/artifacts/knk_vf_tokenizer_128k/knk_vf.model
+  --model /workspace/artifacts/knk_vf_tokenizer_lab/knk_vf.model \
+  --config configs/tokenizer/knk_vf_tokenizer_lab_8k.yaml
 
 python -m knk.tokenizer.export_hf_tokenizer \
-  --config configs/tokenizer/knk_vf_tokenizer_128k.yaml \
+  --config configs/tokenizer/knk_vf_tokenizer_lab_8k.yaml \
   --output /workspace/artifacts/knk_vf_tokenizer_hf
 
 python scripts/count_params.py --config configs/model/knk_vf_lab_38b_active5b.yaml --validate
 
 echo "TOKENIZER LAB DONE"
-echo "tokenizer.model: /workspace/artifacts/knk_vf_tokenizer_128k/knk_vf.model"
+echo "tokenizer.model: /workspace/artifacts/knk_vf_tokenizer_lab/knk_vf.model"
+echo "note: production 128K tokenizer needs GB-scale corpus, not 5k synthetic"
 echo "lab model config: configs/model/knk_vf_lab_38b_active5b.yaml (~38B total / ~5.3B active)"

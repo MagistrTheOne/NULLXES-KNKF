@@ -1,0 +1,34 @@
+name: knk_vf_tokenizer_lab_8k
+owner: NULLXES
+contact: ceo@nullxes.com
+vocab_size: 8192
+model_type: bpe
+normalization: nfkc
+byte_fallback: true
+character_coverage: 0.9995
+split_digits: true
+allow_whitespace_only_pieces: true
+user_defined_symbols:
+  - "<|bos|>"
+  - "<|eos|>"
+  - "<|pad|>"
+  - "<|system|>"
+  - "<|user|>"
+  - "<|assistant|>"
+  - "<|tool|>"
+  - "<|code|>"
+  - "<|/code|>"
+  - "<|think|>"
+  - "<|/think|>"
+notes:
+  - "Lab/smoke tokenizer for synthetic NULLXES corpus (5k lines). Not production 128K."
+  - "Production 128K requires GB-scale EN/RU/code corpus."
+validation_targets:
+  unk_rate_max: 0.01
+  ru_holdout_chars_per_token_min: 2.0
+  en_holdout_chars_per_token_min: 2.5
+  code_holdout_chars_per_token_min: 1.8
+hf_export:
+  tokenizer_class: LlamaTokenizer
+  chat_template: knk_vf_chat_v2
+  model_max_length: 131072

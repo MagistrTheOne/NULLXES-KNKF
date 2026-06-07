@@ -35,23 +35,37 @@ def normalize_corpus(input_path: Path, output_path: Path) -> None:
             target.write(normalize_text(line))
 
 
+def estimate_max_vocab(normalized_path: Path) -> int:
+    """SentencePiece cannot build more pieces than the corpus supports."""
+    line_count = sum(1 for line in normalized_path.read_text(encoding="utf-8").splitlines() if line.strip())
+    # Empirical cap from SP error on 5k-line NULLXES synthetic runs (~3262 max).
+    return max(512, int(line_count * 0.65))
+
+
 def train_sentencepiece(
     input_path: Path,
     model_prefix: Path,
     vocab_size: int = 128000,
     byte_fallback: bool = True,
     special_tokens: list[str] | None = None,
-) -> None:
+) -> int:
     try:
         import sentencepiece as spm
     except ImportError as exc:
         raise RuntimeError("Install sentencepiece to train the tokenizer.") from exc
 
     user_defined_symbols = ",".join(special_tokens or DEFAULT_SPECIAL_TOKENS)
+    max_vocab = estimate_max_vocab(input_path)
+    effective_vocab = min(vocab_size, max_vocab)
+    if effective_vocab < vocab_size:
+        print(
+            f"WARNING: requested vocab_size={vocab_size} capped to {effective_vocab} "
+            f"(corpus supports <= {max_vocab}). Use a larger corpus for 128K production tokenizer."
+        )
     spm.SentencePieceTrainer.Train(
         input=str(input_path),
         model_prefix=str(model_prefix),
-        vocab_size=vocab_size,
+        vocab_size=effective_vocab,
         model_type="bpe",
         normalization_rule_name="nfkc",
         byte_fallback=byte_fallback,
@@ -61,6 +75,7 @@ def train_sentencepiece(
         pad_id=-1,
         unk_id=0,
     )
+    return effective_vocab
 
 
 def main() -> None:
@@ -73,7 +88,8 @@ def main() -> None:
 
     normalized = args.normalized_output or args.output_prefix.with_suffix(".normalized.txt")
     normalize_corpus(args.input, normalized)
-    train_sentencepiece(normalized, args.output_prefix, args.vocab_size)
+    effective = train_sentencepiece(normalized, args.output_prefix, args.vocab_size)
+    print(f"effective_vocab_size={effective}")
 
 
 if __name__ == "__main__":
