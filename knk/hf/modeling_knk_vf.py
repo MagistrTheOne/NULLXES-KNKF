@@ -13,6 +13,7 @@ from dataclasses import dataclass
 import torch
 from torch import nn
 import torch.nn.functional as F
+from transformers import GenerationConfig
 from transformers import PreTrainedModel
 from transformers.modeling_outputs import CausalLMOutputWithPast
 
@@ -151,10 +152,9 @@ class KNKVFMoE(nn.Module):
             KNKVFMLP(config.hidden_size, config.expert_intermediate_size)
             for _ in range(config.num_routed_experts)
         )
-        self.shared_experts = nn.ModuleList(
-            KNKVFMLP(config.hidden_size, config.expert_intermediate_size)
-            for _ in range(config.num_shared_experts)
-        )
+        # Match the initialized checkpoint key path:
+        # model.layers.N.mlp.shared_experts.mlp.experts.0.*
+        self.shared_experts = KNKVFSharedExperts(config)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         original_shape = x.shape
@@ -169,9 +169,24 @@ class KNKVFMoE(nn.Module):
             expert_out = expert(flat_x.index_select(0, token_idx))
             output.index_add_(0, token_idx, expert_out * top_weights[token_idx, choice_idx, None])
 
-        for shared_expert in self.shared_experts:
+        for shared_expert in self.shared_experts.mlp.experts:
             output = output + shared_expert(flat_x)
         return output.reshape(original_shape)
+
+
+class KNKVFSharedExpertMLP(nn.Module):
+    def __init__(self, config: KNKVFConfig) -> None:
+        super().__init__()
+        self.experts = nn.ModuleList(
+            KNKVFMLP(config.hidden_size, config.expert_intermediate_size)
+            for _ in range(config.num_shared_experts)
+        )
+
+
+class KNKVFSharedExperts(nn.Module):
+    def __init__(self, config: KNKVFConfig) -> None:
+        super().__init__()
+        self.mlp = KNKVFSharedExpertMLP(config)
 
 
 class KNKVFDecoderLayer(nn.Module):
@@ -229,6 +244,7 @@ class KNKVFForCausalLM(KNKVFPreTrainedModel):
         self.lm_head = nn.Linear(config.hidden_size, config.vocab_size, bias=False)
         if config.tie_word_embeddings:
             self.lm_head.weight = self.model.embed_tokens.weight
+        self.generation_config = GenerationConfig.from_model_config(config)
         self.post_init()
 
     def forward(
