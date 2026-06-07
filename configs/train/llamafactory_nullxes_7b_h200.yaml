@@ -33,7 +33,7 @@ num_train_epochs: 3
 lr_scheduler_type: cosine
 warmup_ratio: 0.03
 bf16: true
-flash_attn: fa2
+flash_attn: sdpa
 gradient_checkpointing: true
 
 val_size: 0.05
