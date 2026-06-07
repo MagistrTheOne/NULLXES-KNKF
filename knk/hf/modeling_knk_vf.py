@@ -95,17 +95,22 @@ class KNKVFAttention(nn.Module):
         k = k.repeat_interleave(self.kv_group_size, dim=1)
         v = v.repeat_interleave(self.kv_group_size, dim=1)
 
-        attn = F.scaled_dot_product_attention(q, k, v, attn_mask=self._mask(seq_len, hidden_states.device))
+        attn = F.scaled_dot_product_attention(
+            q,
+            k,
+            v,
+            attn_mask=self._mask(seq_len, hidden_states.device, q.dtype),
+        )
         attn = attn.transpose(1, 2).contiguous().view(batch, seq_len, -1)
         return self.o_proj(attn)
 
-    def _mask(self, seq_len: int, device: torch.device) -> torch.Tensor:
+    def _mask(self, seq_len: int, device: torch.device, dtype: torch.dtype) -> torch.Tensor:
         rows = torch.arange(seq_len, device=device)[:, None]
         cols = torch.arange(seq_len, device=device)[None, :]
         keep = cols <= rows
         if self.local_window is not None:
             keep &= cols >= (rows - self.local_window + 1)
-        mask = torch.zeros((seq_len, seq_len), device=device, dtype=torch.float32)
+        mask = torch.zeros((seq_len, seq_len), device=device, dtype=dtype)
         mask.masked_fill_(~keep, -math.inf)
         return mask
 
